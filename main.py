@@ -130,21 +130,42 @@ def load_data(ticker):
 
     except Exception:
         pass
+        dates = pd.date_range(start=START, end=TODAY, freq="B")
+
+prices = np.cumsum(np.random.randn(len(dates))) + 150
+
+demo_df = pd.DataFrame({
+    "Date": dates,
+    "Open": prices + np.random.randn(len(dates)),
+    "High": prices + abs(np.random.randn(len(dates))),
+    "Low": prices - abs(np.random.randn(len(dates))),
+    "Close": prices,
+    "Volume": np.random.randint(1_000_000, 5_000_000, len(dates))
+})
+
+return demo_df
+
 
     # 🔥 FALLBACK DEMO DATA (Yahoo blocked)
-    dates = pd.date_range(start="2022-01-01", periods=300)
-    prices = np.cumsum(np.random.randn(300)) + 150
+    # dates = pd.date_range(start=START, periods=300)
+    # prices = np.cumsum(np.random.randn(300)) + 150
 
-    demo_df = pd.DataFrame({
-        "Date": dates,
-        "Open": prices + np.random.randn(300),
-        "High": prices + abs(np.random.randn(300)),
-        "Low": prices - abs(np.random.randn(300)),
-        "Close": prices,
-        "Volume": np.random.randint(1_000_000, 5_000_000, 300)
-    })
+    # demo_df = pd.DataFrame({
+    #     "Date": dates,
+    #     "Open": prices + np.random.randn(300),
+    #     "High": prices + abs(np.random.randn(300)),
+    #     "Low": prices - abs(np.random.randn(300)),
+    #     "Close": prices,
+    #     "Volume": np.random.randint(1_000_000, 5_000_000, 300)
+    # })
 
-    return demo_df
+    # return demo_df
+
+
+
+
+
+
 
 
 
