@@ -130,8 +130,7 @@ def load_data(ticker):
 
     except Exception:
         pass
-        dates = pd.date_range(start=START, end=TODAY, freq="B")
-
+dates = pd.date_range(start=START, end=TODAY, freq="B")
 prices = np.cumsum(np.random.randn(len(dates))) + 150
 
 demo_df = pd.DataFrame({
