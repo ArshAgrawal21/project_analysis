@@ -1,5 +1,6 @@
 # pip install streamlit yfinance plotly pandas numpy
-
+import gspread 
+from google.oauth2.service_account import Credentials
 import streamlit as st
 import pandas as pd
 import yfinance as yf
@@ -7,6 +8,24 @@ from datetime import date
 from plotly import graph_objs as go
 import numpy as np
 import os
+
+## connect to google sheets
+SCOPE = [
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive"
+]
+
+creds = Credentials.from_service_account_file(
+    "credentials.json",
+    scopes=SCOPE
+)
+
+client = gspread.authorize(creds)
+sheet = client.open("StreamlitUsers").sheet1
+
+def save_user_to_google_sheet(email, password):
+    sheet.append_row([email, password])
+
 
 ## image background
 import base64
@@ -39,9 +58,7 @@ def set_bg_local(image_path):
 
 
 
-if os.path.exists("image3.jpg"):
-    set_bg_local("image3.jpg")
-
+set_bg_local("image3.jpg")
 
 # -------------------------------------------------------------------
 # PAGE CONFIG
@@ -51,7 +68,7 @@ st.set_page_config(page_title="📊 Stock Trend Analysis", layout="wide")
 # -------------------------------------------------------------------
 # USER DATABASE
 # -------------------------------------------------------------------
-USERS_FILE = "/tmp/users.csv"
+USERS_FILE = "users.csv"
 
 if not os.path.exists(USERS_FILE):
     pd.DataFrame(
@@ -93,13 +110,16 @@ def login_page():
             password = st.text_input("🔑 Password", type="password")
             if st.form_submit_button("🚀 Login"):
                 users = load_users()
-                if ((users.email == email) & (users.password == password)).any():
-                    st.session_state.logged_in = True
-                    st.session_state.page = "trend"
-                    st.rerun()
+                if not users.empty:
+                    if ((users.email == email) & (users.password == password)).any():
+                        st.session_state.logged_in = True
+                        st.session_state.page = "trend"
+                        st.rerun()
+                    else:
+                        st.error("❌ Invalid email or password")
                 else:
-                    st.error("❌ Invalid email or password")
-        
+                    st.error("❌ No users found")
+
         st.markdown("---")
         st.markdown("Don't have an account?")
         if st.button("📝 Create New Account"):
@@ -130,6 +150,7 @@ def signup_page():
                 elif password != confirm:
                     st.error("❌ Passwords do not match")
                 else:
+                    save_user_to_google_sheet(email, password)
                     save_user(email, password)
                     st.success("🎉 Account created")
                     st.session_state.page = "login"
