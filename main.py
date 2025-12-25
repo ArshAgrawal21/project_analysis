@@ -117,31 +117,13 @@ TODAY = date.today().strftime("%Y-%m-%d")
 #     df.reset_index(inplace=True)
 #     return df
 
-
 def load_data(ticker):
-    try:
-        yf.set_tz_cache_location("/tmp")
+    yf.set_tz_cache_location("/tmp")
+    stock = yf.Ticker(ticker)
+    df = stock.history(period="max", interval="1d")
+    df.reset_index(inplace=True)
+    return df
 
-        stock = yf.Ticker(ticker)
-
-        df = stock.history(
-            start=START,
-            end=TODAY,
-            interval="1d",
-            auto_adjust=False,
-            actions=False,
-            repair=True
-        )
-
-        if df.empty:
-            return pd.DataFrame()
-
-        df.reset_index(inplace=True)
-        return df
-
-    except Exception as e:
-        st.error(f"❌ Error fetching data: {e}")
-        return pd.DataFrame()
 
 
 # -------------------------------------------------------------------
