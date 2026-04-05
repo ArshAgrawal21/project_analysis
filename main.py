@@ -9,7 +9,16 @@ import numpy as np
 import os
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import MinMaxScaler
-    
+import streamlit as st
+
+# Inject CSS to hide Streamlit's default header and menu
+hide_streamlit_style = """
+<style>
+#MainMenu {visibility: hidden;}
+header {visibility: hidden;}
+</style>
+"""
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 # -------------------------------------------------------------------
 # PAGE CONFIG
 # -------------------------------------------------------------------
@@ -63,7 +72,7 @@ st.markdown("""
     
     /* Button styling */
     .stButton>button {
-        background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+        # background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
         color: white;
         border: none;
         border-radius: 25px;
@@ -142,6 +151,60 @@ st.markdown("""
         border-radius: 10px;
         margin-top: 30px;
     }
+
+    /* Login Header */
+.login-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-header h1 {
+    font-size: 48px;
+    font-weight: 800;
+    background: linear-gradient(90deg,#00F5A0,#00D9F5,#7B61FF,#FF4D6D);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 5px;
+}
+
+.login-header p {
+    color: #9aa4b2;
+    font-size: 18px;
+}
+
+/* Login Card */
+[data-testid="stForm"] {
+    background: rgba(255,255,255,0.04);
+    padding: 30px;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+}
+
+/* Input fields */
+.stTextInput input {
+    background-color: #262730 !important;
+    border-radius: 10px !important;
+    border: 1px solid #3a3f5c !important;
+    color: white !important;
+}
+
+/* Login button */
+.stButton > button {
+    # background: linear-gradient(90deg,#ff6b6b,#4ecdc4);
+    border-radius: 30px;
+    border: none;
+    font-weight: bold;
+    padding: 10px 25px;
+    transition: 0.3s;
+}
+
+.stButton > button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -173,14 +236,73 @@ if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 if "page" not in st.session_state:
     st.session_state.page = "login"
+st.markdown("""
+<style>
 
+/* FULL SCREEN BACKGROUND */
+.stApp {
+    background: linear-gradient(135deg, #0f172a, #020617, #020617);
+    background-attachment: fixed;
+}
+
+/* optional glow effect */
+.stApp::before {
+    content: "";
+    position: fixed;
+    top: -200px;
+    left: -200px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(0,255,200,0.15), transparent);
+    filter: blur(120px);
+    z-index: -1;
+}
+
+.stApp::after {
+    content: "";
+    position: fixed;
+    bottom: -200px;
+    right: -200px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(123,97,255,0.15), transparent);
+    filter: blur(120px);
+    z-index: -1;
+}
+/* Create account button */
+.create-btn button {
+    background: linear-gradient(90deg,#7B61FF,#00D9F5);
+    color: white;
+    border-radius: 30px;
+    border: none;
+    font-weight: bold;
+}
+
+.create-btn button:hover {
+    background: linear-gradient(90deg,#6a4cff,#00bcd4);
+}
+
+/* Back to login button */
+.back-btn button {
+    background: linear-gradient(90deg,#FF4D6D,#FF9800);
+    color: white;
+    border-radius: 30px;
+    border: none;
+    font-weight: bold;
+}
+
+.back-btn button:hover {
+    background: linear-gradient(90deg,#ff2d55,#ff6a00);
+}
+</style>
+""", unsafe_allow_html=True)
 # -------------------------------------------------------------------
 # MODERN LOGIN PAGE
 # -------------------------------------------------------------------
 def login_page():
-    st.markdown("<h1 style='text-align:center;'>🔐 Welcome Back</h1>", unsafe_allow_html=True)
-    st.markdown("<h4 style='text-align:center;color:red;'>Login To  Stock Trend Analysis WebApp</h4>", unsafe_allow_html=True)
-
+    st.markdown("<h1 style='text-align:center;'>Stock Trend Analysis Pro</h1>", unsafe_allow_html=True)
+    # st.markdown("<h4 style='text-align:center;color:red;'>Login To  Stock Trend Analysis WebApp</h4>", unsafe_allow_html=True)
+    
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         st.markdown("### Login")
@@ -200,7 +322,7 @@ def login_page():
 
         st.markdown("---")
         st.markdown("Don't have an account?")
-        if st.button("📝 Create New Account"):
+        if st.button("Create New Account"):
             st.session_state.page = "signup"
             st.rerun()
 
@@ -208,8 +330,8 @@ def login_page():
 # MODERN SIGNUP PAGE
 # -------------------------------------------------------------------
 def signup_page():
-    st.markdown("<h1 style='text-align:center;'>📝 Create Account</h1>", unsafe_allow_html=True)
-    st.markdown("<h4 style='text-align:center;color:red;'>Signup To  Stock Trend Analysis WebApp</h4>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align:center;'> Create Account</h1>", unsafe_allow_html=True)
+    #st.markdown("<h4 style='text-align:center;color:red;'>Signup To  Stock Trend Analysis WebApp</h4>", unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
@@ -433,12 +555,22 @@ def trend_app():
     st.markdown('<p style="text-align: center; font-size: 1.2em; color: rgba(255,255,255,0.8); margin-bottom: 30px;">Advanced AI-Powered Stock Analysis & Trading Signals</p>', unsafe_allow_html=True)
     
     # Stock Selection Section
-    st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+    st.markdown('<div class="metric-card>', unsafe_allow_html=True)
     col1, col2, col3 = st.columns([2, 1, 1])
     
     with col1:
         st.markdown("### 📈 Select Stock")
-        stock = st.selectbox("Stock Symbol", ("AAPL", "GOOG", "MSFT", "TSLA", "AMZN", "NVDA", "META", "NFLX", "AMD", "CRM", "ORCL", "INTC", "CSCO", "ADBE", "PYPL", "UBER", "SPOT", "SQ", "SHOP", "COIN"), label_visibility="collapsed")
+        st.markdown("""
+<style>
+div[data-baseweb="select"] > div {
+    background-color: #262730;
+    border-radius: 10px;
+    # padding: 5px;
+                    color: white;
+}
+</style>
+""", unsafe_allow_html=True)
+        stock = st.selectbox(" Stock Symbol", ("AAPL", "GOOG", "MSFT", "TSLA", "AMZN", "NVDA", "META", "NFLX", "AMD", "CRM", "ORCL", "INTC", "CSCO", "ADBE", "PYPL", "UBER", "SPOT", "SQ", "SHOP", "COIN"), label_visibility="collapsed")
     
     # Load data immediately after stock selection
     df = load_data(stock)
@@ -1015,8 +1147,10 @@ def trend_app():
         </div>
         """, unsafe_allow_html=True)
     # Footer
-    st.markdown('<div class="footer">', unsafe_allow_html=True)
+    # st.markdown('<div class="footer">', unsafe_allow_html=True)
     st.markdown("""
+                <hr/>\
+                <br/>
     <div style='text-align: center; color: rgba(255,255,255,0.7);'>
         <h3 style='margin-bottom: 10px;'>🚀 Stock Trend Analysis Pro</h3>
         <p><strong>Powered by AI & Advanced Technical Analysis</strong></p>
